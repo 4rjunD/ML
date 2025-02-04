@@ -1,89 +1,107 @@
-# ML
-# CLIPMemory: Efficient Image Search and Retrieval using CLIP
+# TextCLIP: Text-to-Image Search using CLIP
 
-CLIPMemory is a simple image search and retrieval system built on OpenAI's CLIP (Contrastive Language-Image Pre-training) model. It enables efficient semantic search of images using both text queries and image-based similarity search.
+A powerful text-to-image search system built on OpenAI's CLIP (Contrastive Language-Image Pre-training) model. This system enables semantic image search using natural language queries, allowing users to find relevant images using text descriptions.
 
 ## Features
 
-- Semantic image search using natural language queries
-- Image-to-image similarity search
-- Efficient memory management with LRU caching
-- Batch processing for optimal performance
-- Memory usage monitoring and automatic cleanup
-- Persistent storage of image embeddings
+- 🔍 Semantic image search using natural language queries
+- 💾 Efficient database management with persistent storage
+- 🚀 Batch processing for optimal performance
+- 📊 Built-in visualization of search results
+- 🔄 Automatic database saving and loading
+- 📝 Comprehensive logging system
 
 ## Requirements
 
+The system requires the following main dependencies:
 ```bash
-pip install -r requirements.txt
+torch
+transformers
+Pillow
+matplotlib
 ```
 
 ## Quick Start
 
 ```python
-from CLIPMemory import ImageDatabase
+from textCLIP import ImageDatabase, display_results
 
 # Initialize the database
-db = ImageDatabase(cache_size=100)
+db = ImageDatabase()
 
 # Add images to the database
-db.add_image("path/to/image.jpg")
+db.add_images_to_database("path/to/image/folder")
 
-# Search using text
-results = db.query_text("a dog playing in the park", top_k=5)
-for score, path in results:
-    print(f"{path}: {score}")
+# Search using text query
+query_text = "a sunset over the mountains"
+results = db.query_text_database(query_text, top_k=5)
 
-# Search using another image
-results = db.query_image("path/to/query_image.jpg", top_k=5)
+# Display results
+display_results(query_text, results, "path/to/image/folder")
 ```
 
-## Architecture
+## Core Components
 
-CLIPMemory consists of three main components:
+### ImageDatabase Class
 
-1. **ImageDatabase**: The main interface for adding images and performing queries
-2. **LRUCache**: Efficient caching system for frequently accessed embeddings
-3. **MemoryMonitor**: Background thread monitoring system memory usage
+The main class that handles:
+- Loading and initializing the CLIP model
+- Managing the image database
+- Processing text queries
+- Calculating image similarities
+- Persistent storage of embeddings
 
-## Memory Management
+### Display Function
 
-CLIPMemory implements several strategies for efficient memory usage:
+The `display_results` function provides visualization of:
+- Query text
+- Top matching images
+- Similarity scores
 
-- LRU (Least Recently Used) caching of embeddings
-- Automatic cleanup of old embeddings when memory threshold is reached
-- Batch processing of images for optimal GPU memory usage
-- Persistent storage to disk for long-term storage
+## Database Management
+
+The system automatically manages:
+- Persistent storage of image embeddings
+- Loading of previous database state
+- Metadata tracking including last accessed times
+- Database saving after modifications
 
 ## Usage Examples
 
-### Adding Multiple Images
+### Adding Images to Database
 
 ```python
-# Add all images from a directory
 db = ImageDatabase()
-for image_path in os.listdir("images_directory"):
-    if image_path.endswith(('.jpg', '.png', '.jpeg')):
-        db.add_image(os.path.join("images_directory", image_path))
+db.add_images_to_database("images_folder")
 ```
 
 ### Text-Based Search
 
 ```python
-# Search for nature scenes
-results = db.query_text("beautiful nature landscape", top_k=10)
+# Search for specific concepts
+results = db.query_text_database("a dog playing in the park", top_k=5)
+
+# Search for abstract concepts
+results = db.query_text_database("happiness", top_k=5)
+
+# Search for specific objects
+results = db.query_text_database("red car", top_k=5)
 ```
 
-### Image-Based Search
+## Supported Image Formats
 
-```python
-# Find similar images
-similar_images = db.query_image("query_image.jpg", top_k=5)
-```
+- JPEG (.jpg, .jpeg)
+- PNG (.png)
+- WebP (.webp)
 
-## Performance Considerations
+## Error Handling
 
-- Use appropriate `cache_size` based on available system memory
-- Adjust `max_batch_size` based on GPU memory
-- Monitor memory usage with `memory_threshold` parameter
-- Use `display_results()` for visualizing search results
+The system includes comprehensive error handling and logging for:
+- Image loading and processing
+- Database operations
+- Query processing
+- Result visualization
+
+## License
+
+This project is available under the MIT License.
