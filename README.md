@@ -102,6 +102,3 @@ The system includes comprehensive error handling and logging for:
 - Query processing
 - Result visualization
 
-## License
-
-This project is available under the MIT License.
